@@ -3,7 +3,7 @@
 A simple and accurate **Personal Income Tax Calculator** based on  
 **Nigeria Tax Act, 2025 (Act No. 7 of 2025)**.
 
-🔗 **Live Demo:**  ](https://sirajomalcolmx.github.io/nigeria-tax-2025/)
+🔗 **Live Demo:**  ](https://sirajomalcolmx.github.io/nigeria-tax-2025-calculator/)
 
 ---
 
