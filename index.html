@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,9 +26,9 @@
                 </svg>
             </div>
             <h1 class="text-3xl font-bold tracking-tight text-slate-900">Nigeria Tax 2025</h1>
-            <p class="mt-2 text-slate-600">Personal Income Tax Calculator</p>
+            <p class="mt-2 text-slate-600">Personal Income Tax Calculator (15% Flat Rate)</p>
             <div class="mt-4 flex flex-col items-center gap-2">
-                <span class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs font-semibold rounded-full uppercase tracking-wider">Based on Act No. 7 of 2025</span>
+                <span class="inline-block px-3 py-1 bg-slate-200 text-slate-700 text-xs font-semibold rounded-full uppercase tracking-wider">Custom Rule: 15% above ₦800k</span>
                 <div class="flex flex-col items-center">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Developed By Sirajo Malcolm X</span>
                     <a href="https://wa.me/2348140905040" target="_blank" class="flex items-center gap-1 mt-1 text-green-600 hover:text-green-700 transition-colors">
@@ -86,17 +86,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <p class="text-blue-800 font-medium">No tax payable under the Nigeria Tax Act, 2025.</p>
-                <p class="text-xs text-blue-600 mt-1">Total annual income is within the ₦800,000 non-taxable band.</p>
+                <p class="text-blue-800 font-medium">No tax payable.</p>
+                <p class="text-xs text-blue-600 mt-1">Total annual income is within the ₦800,000 tax-free limit.</p>
             </div>
         </div>
 
         <!-- Footnote -->
         <div class="text-center text-slate-400 text-[10px] md:text-xs px-4 space-y-2">
-            <p>Compliance Notice: This calculator uses the Seventh Schedule tax bands as defined in the Nigeria Tax Act, 2025.</p>
-            <p>Primary relief is applied via the 0% initial band (₦800k threshold) as per Sections 28 and 58.</p>
+            <p>Applied Logic: First ₦800,000 is tax-free. Flat 15% rate applied to all income above ₦800,000.</p>
             <div class="pt-2 border-t border-slate-200 mt-4">
-                <p class="font-bold text-slate-500">OFFICIALLY DEVELOPED BY SIRAJO MALCOLM X</p>
+                <p class="font-bold text-slate-500 uppercase">Developed By Sirajo Malcolm X</p>
                 <p class="text-[9px] uppercase tracking-widest text-slate-400 mt-1">WhatsApp Support: +234 814 090 5040</p>
             </div>
         </div>
@@ -127,9 +126,9 @@
                 return;
             }
 
-            // TAX-EXEMPT THRESHOLD (Section 28 & 58)
-            // The 2025 Act protects low earners by making the first 800k non-taxable (0% rate)
+            // TAX-EXEMPT THRESHOLD
             const THRESHOLD = 800000;
+            const FLAT_RATE = 0.15;
 
             if (annualIncome <= THRESHOLD) {
                 resultsDiv.classList.add('hidden');
@@ -140,21 +139,12 @@
             noTaxDiv.classList.add('hidden');
             resultsDiv.classList.remove('hidden');
 
-            // 2025 ACT PROGRESSIVE BANDS (Seventh Schedule)
-            const bands = [
-                { limit: 800000, rate: 0.00, label: "First ₦800,000 (Tax Free)" },
-                { limit: 2200000, rate: 0.07, label: "Next ₦2,200,000" },
-                { limit: 3000000, rate: 0.11, label: "Next ₦3,000,000" },
-                { limit: 4000000, rate: 0.15, label: "Next ₦4,000,000" },
-                { limit: 15000000, rate: 0.19, label: "Next ₦15,000,000" },
-                { limit: Infinity, rate: 0.25, label: "Balance Above ₦25m" }
-            ];
+            const taxableAmount = annualIncome - THRESHOLD;
+            const totalTax = taxableAmount * FLAT_RATE;
 
-            let remaining = annualIncome;
-            let totalTax = 0;
             let htmlBreakdown = '';
 
-            // Input Header in breakdown
+            // Input Header
             htmlBreakdown += `
                 <div class="flex justify-between text-xs py-1 border-b border-slate-50 italic mb-2">
                     <span class="text-slate-400">Gross Chargeable Income</span>
@@ -162,27 +152,27 @@
                 </div>
             `;
 
-            for (const band of bands) {
-                if (remaining <= 0) break;
+            // Band 1: Free
+            htmlBreakdown += `
+                <div class="flex justify-between items-center text-sm py-2 hover:bg-slate-50/50 px-1 rounded transition-colors">
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-slate-700">Initial ₦800,000</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Tax-Free Threshold</span>
+                    </div>
+                    <span class="font-bold text-slate-800">₦0.00</span>
+                </div>
+            `;
 
-                const taxableInBand = Math.min(remaining, band.limit);
-                const taxForBand = taxableInBand * band.rate;
-                
-                totalTax += taxForBand;
-                remaining -= taxableInBand;
-
-                if (taxableInBand > 0) {
-                    htmlBreakdown += `
-                        <div class="flex justify-between items-center text-sm py-2 hover:bg-slate-50/50 px-1 rounded transition-colors group">
-                            <div class="flex flex-col">
-                                <span class="font-semibold text-slate-700">${band.label}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Rate: ${(band.rate * 100).toFixed(0)}% &bull; Amount: ${formatMoney(taxableInBand)}</span>
-                            </div>
-                            <span class="font-bold text-slate-800">${formatMoney(taxForBand)}</span>
-                        </div>
-                    `;
-                }
-            }
+            // Band 2: Flat Tax
+            htmlBreakdown += `
+                <div class="flex justify-between items-center text-sm py-2 hover:bg-slate-50/50 px-1 rounded transition-colors">
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-slate-700">Balance Above ₦800k</span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Rate: 15% on ${formatMoney(taxableAmount)}</span>
+                    </div>
+                    <span class="font-bold text-slate-800">${formatMoney(totalTax)}</span>
+                </div>
+            `;
 
             taxPayableEl.innerText = formatMoney(totalTax);
             netIncomeEl.innerText = formatMoney(annualIncome - totalTax);
