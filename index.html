@@ -7,18 +7,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; padding-bottom: 70px; } /* Space for the sticky ad */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        /* --- Custom 320x50 Ad Styles --- */
+        .ad-footer-sticky {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            padding: 5px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .ad-banner {
+            width: 320px;
+            height: 50px;
+            background: linear-gradient(90deg, #fff3d6, #ffffff);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            border-radius: 4px;
+            border: 1px solid #ffe8b3;
+        }
+
+        .ad-text { line-height: 1.15; }
+        .ad-title { font-size: 12px; font-weight: bold; color: #f7931e; }
+        .ad-brand { font-size: 11px; font-weight: bold; color: #000; }
+        .ad-sub { font-size: 9px; color: #444; }
+        .ad-right { display: flex; align-items: center; gap: 8px; }
+        .play-logo { height: 20px; }
+
+        .btn-install {
+            background: #f7931e;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: bold;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
 
     <div class="max-w-xl mx-auto px-4 py-8 md:py-12">
-        <!-- Header -->
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center p-3 bg-green-100 rounded-full mb-4 border border-green-200 shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +84,6 @@
             </div>
         </div>
 
-        <!-- Calculator Card -->
         <div class="glass-card rounded-2xl shadow-xl p-6 md:p-8 mb-6 transition-all duration-300 ring-1 ring-slate-200/50">
             <div class="mb-6">
                 <label for="income" class="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide">Enter Annual Taxable Income (₦)</label>
@@ -53,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- Results Section -->
             <div id="results" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div class="p-5 bg-green-50 rounded-xl border border-green-100 shadow-sm">
@@ -65,7 +108,6 @@
                         <p id="netIncome" class="text-2xl font-black text-white">₦0.00</p>
                     </div>
                 </div>
-
                 <div class="border-t border-slate-100 pt-6">
                     <h3 class="text-xs font-black text-slate-400 mb-4 uppercase tracking-[0.2em] flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -73,57 +115,42 @@
                         </svg>
                         Detailed PIT Breakdown
                     </h3>
-                    <div id="breakdown" class="space-y-2">
-                        <!-- Breakdown items injected here -->
-                    </div>
+                    <div id="breakdown" class="space-y-2"></div>
                 </div>
             </div>
 
-            <!-- Exempt Message -->
-            <div id="noTax" class="hidden p-8 bg-blue-50 rounded-xl border border-blue-100 text-center animate-in fade-in zoom-in-95 duration-200">
-                <div class="flex justify-center mb-3">
-                    <div class="p-2 bg-blue-100 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
+            <div id="noTax" class="hidden p-8 bg-blue-50 rounded-xl border border-blue-100 text-center">
                 <p class="text-blue-900 font-black text-lg">0% Tax (Exempt)</p>
-                <p class="text-sm text-blue-700 mt-1 font-medium">Income falls within the ₦0 – ₦800,000 tax-free band.</p>
             </div>
         </div>
+    </div>
 
-        <!-- Footnote -->
-        <div class="text-center text-slate-400 text-[10px] md:text-xs px-4">
-            <div class="bg-white/50 py-4 px-6 rounded-2xl border border-slate-200 shadow-sm">
-                <p class="font-bold text-slate-800 uppercase tracking-widest mb-2 text-[11px]">System Configuration</p>
-                <div class="grid grid-cols-2 gap-2 text-left mb-3 max-w-sm mx-auto">
-                    <div class="bg-slate-100 p-2 rounded">0 – 800k: <span class="font-bold">0%</span></div>
-                    <div class="bg-slate-100 p-2 rounded">800k – 3m: <span class="font-bold">15%</span></div>
-                    <div class="bg-slate-100 p-2 rounded">3m – 12m: <span class="font-bold">18%</span></div>
-                    <div class="bg-slate-100 p-2 rounded">12m – 25m: <span class="font-bold">21%</span></div>
-                    <div class="bg-slate-100 p-2 rounded">25m – 50m: <span class="font-bold">23%</span></div>
-                    <div class="bg-slate-100 p-2 rounded">> 50m: <span class="font-bold">25%</span></div>
-                </div>
-                <p class="font-black text-slate-600 border-t border-slate-200 pt-3 text-[12px]">OFFICIALLY DEVELOPED BY SIRAJO MALCOLM X</p>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mt-1">WhatsApp: +234 814 090 5040</p>
+    <div class="ad-footer-sticky">
+        <div class="ad-banner">
+            <div class="ad-text">
+              <div class="ad-brand">TkdataPay</div>
+              <div class="ad-title">Cheap Data & Airtime</div>
+              <div class="ad-sub">Fast • Reliable • Secure</div>
+            </div>
+          
+            <div class="ad-right">
+              <img class="play-logo" src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play">
+              <a class="btn-install" href="https://play.google.com/store/apps/details?id=com.msorg.tkdatapay" target="_blank">INSTALL</a>
             </div>
         </div>
     </div>
 
     <script>
+        /* Your Original Calculation Logic Below */
         function formatMoney(amount) {
             return new Intl.NumberFormat('en-NG', {
-                style: 'currency',
-                currency: 'NGN',
-                minimumFractionDigits: 2
+                style: 'currency', currency: 'NGN', minimumFractionDigits: 2
             }).format(amount).replace('NGN', '₦');
         }
 
         function calculateTax() {
             const incomeInput = document.getElementById('income');
             const annualIncome = parseFloat(incomeInput.value);
-            
             const resultsDiv = document.getElementById('results');
             const noTaxDiv = document.getElementById('noTax');
             const breakdownDiv = document.getElementById('breakdown');
@@ -136,13 +163,12 @@
                 return;
             }
 
-            // BAND CONFIGURATION
             const bands = [
                 { limit: 800000, rate: 0.00, label: "0 – 800,000" },
-                { limit: 2200000, rate: 0.15, label: "800,001 – 3,000,000" }, // 3m - 800k = 2.2m
-                { limit: 9000000, rate: 0.18, label: "3,000,001 – 12,000,000" }, // 12m - 3m = 9m
-                { limit: 13000000, rate: 0.21, label: "12,000,001 – 25,000,000" }, // 25m - 12m = 13m
-                { limit: 25000000, rate: 0.23, label: "25,000,001 – 50,000,000" }, // 50m - 25m = 25m
+                { limit: 2200000, rate: 0.15, label: "800,001 – 3,000,000" },
+                { limit: 9000000, rate: 0.18, label: "3,000,001 – 12,000,000" },
+                { limit: 13000000, rate: 0.21, label: "12,000,001 – 25,000,000" },
+                { limit: 25000000, rate: 0.23, label: "25,000,001 – 50,000,000" },
                 { limit: Infinity, rate: 0.25, label: "Above 50,000,000" }
             ];
 
@@ -161,23 +187,15 @@
 
             for (const band of bands) {
                 if (remaining <= 0) break;
-
                 const taxableInBand = Math.min(remaining, band.limit);
                 const taxForBand = taxableInBand * band.rate;
-                
                 totalTax += taxForBand;
                 remaining -= taxableInBand;
 
                 if (taxableInBand > 0) {
-                    htmlBreakdown += `
-                        <div class="flex justify-between items-center text-sm py-3 px-4 bg-white border border-slate-100 rounded-xl shadow-sm">
-                            <div class="flex flex-col">
-                                <span class="font-black text-slate-800 text-xs uppercase tracking-tight">${band.label}</span>
-                                <span class="text-[10px] text-slate-400 font-bold">RATE: ${(band.rate * 100).toFixed(0)}% ON ${formatMoney(taxableInBand)}</span>
-                            </div>
-                            <span class="font-black text-slate-900">${formatMoney(taxForBand)}</span>
-                        </div>
-                    `;
+                    htmlBreakdown += `<div class="flex justify-between items-center text-sm py-3 px-4 bg-white border border-slate-100 rounded-xl shadow-sm">
+                        <div class="flex flex-col"><span class="font-black text-slate-800 text-xs uppercase">${band.label}</span><span class="text-[10px] text-slate-400 font-bold">RATE: ${(band.rate * 100).toFixed(0)}%</span></div>
+                        <span class="font-black text-slate-900">${formatMoney(taxForBand)}</span></div>`;
                 }
             }
 
@@ -188,4 +206,3 @@
     </script>
 </body>
 </html>
-
